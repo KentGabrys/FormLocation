@@ -18,6 +18,7 @@ namespace FormLocation
             InitializeComponent();
             _recorder = new WindowRecorder();
             _settingsPath = _recorder.InitializeWindowsSizer( this );
+
         }
 
         private void btnOpenMyKingdom_Click( object sender, System.EventArgs e )

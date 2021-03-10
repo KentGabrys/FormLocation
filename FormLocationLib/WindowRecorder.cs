@@ -19,12 +19,13 @@ namespace FormLocationLib
         {
             SetSettingsPath();
             _form = form;
+
             _form.Load += InitializeRecorder;
-            _form.Disposed += FormOnDisposed ;
+            _form.Disposed += SaveOnDisposed;
             return _settingsFilePath;
         }
 
-        private void FormOnDisposed( object sender, EventArgs e )
+        private void SaveOnDisposed( object sender, EventArgs e )
         {
             var formSettings = RestoreSettingsList();
 
@@ -35,7 +36,6 @@ namespace FormLocationLib
                 if (settings == null)
                 {
                     var list = formSettings.ToList();
-                    UpdateFromForm();
                     list.Add( this );
                     formSettings = list;
                 }
@@ -48,10 +48,30 @@ namespace FormLocationLib
             }
             else
             {
-                UpdateFromForm();
                 var list = new List<WindowRecorder>() { this };
                 File.WriteAllText( _settingsFilePath, JsonConvert.SerializeObject( list, Formatting.Indented ) );
             }
+        }
+
+        private void InitializeRecorder( object sender, EventArgs e )
+        {
+            var settings = RestoreSettingsList();
+            
+            // get the object by this form's name
+            _settings = settings.FirstOrDefault( f => f.Name == _form.Name );
+            // if not found, set up the current form values to settings
+            if (_settings == null)
+            {
+                _settings = this;
+                _settings.Name = _form.Name;
+                _settings.Size = _form.Size;
+                _settings.Location = _form.Location;
+            }
+
+            // restore settings to objects
+            this.Name = _form.Name = _settings.Name;
+            this.Size = _form.Size = _settings.Size;
+            this.Location = _form.Location = _settings.Location;
         }
 
 
@@ -59,7 +79,7 @@ namespace FormLocationLib
         {
             var formSettings = new List<WindowRecorder>();
 
-            if ( File.Exists( _settingsFilePath ) )
+            if (File.Exists( _settingsFilePath ))
             {
                 var fileText = File.ReadAllText( _settingsFilePath );
                 formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( fileText ).ToList();
@@ -68,50 +88,18 @@ namespace FormLocationLib
             return formSettings;
         }
 
-        private void UpdateFromForm()
-        {
-            Location = _form.Location;
-            Size = _form.Size;
-            Name = _form.Name;
-        }
-
         private void SetSettingsPath()
         {
             var settingsPath =
                  Path.Combine(
                      Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ),
-                     AppDomain.CurrentDomain.FriendlyName.Substring(0, AppDomain.CurrentDomain.FriendlyName.Length - 4 ) );
+                     AppDomain.CurrentDomain.FriendlyName.Substring( 0, AppDomain.CurrentDomain.FriendlyName.Length - 4 ) );
             // Insures that the directory exists, if this is new
             Directory.CreateDirectory( settingsPath );
 
             _settingsFilePath = Path.Combine( settingsPath, "formSettings.json" );
         }
 
-
-        private void InitializeRecorder( object sender, EventArgs e )
-        {
-
-            if (File.Exists( _settingsFilePath ))
-            {
-                var fileText = File.ReadAllText( _settingsFilePath );
-                //deserialize to objects
-                var formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( fileText );
-                // get the object by this form's name
-                _settings = formSettings.FirstOrDefault( f => f.Name == _form.Name );
-                // if found
-                if (_settings != null)
-                {
-                    this.Name = _form.Name = _settings.Name;
-                    this.Size = _form.Size = _settings.Size;
-                    this.Location = _form.Location = _settings.Location;
-                    return;
-                }
-            }
-            _settings = this;
-            _settings.Name = _form.Name;
-            _settings.Size = _form.Size;
-            _settings.Location = _form.Location;
-        }
 
         public Point Location { get; set; }
         public string Name { get; set; }

@@ -31,7 +31,6 @@ namespace FormLocationTests
             _form = new MainForm();
             _form.StartPosition = FormStartPosition.Manual;
             _form.Location = _formLocation;
-            
 
             _recorder = new WindowRecorder();
             _settingsFile = _recorder.InitializeWindowsSizer(_form);
