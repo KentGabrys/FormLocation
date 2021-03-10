@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using FormLocation;
 
-namespace TestFormLocation
+namespace FormLocation
 {
     static class Program
     {

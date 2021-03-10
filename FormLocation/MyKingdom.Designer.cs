@@ -1,7 +1,7 @@
 ﻿
 namespace FormLocation
 {
-    partial class MainForm
+    partial class MyKingdom
     {
         /// <summary>
         /// Required designer variable.
@@ -29,35 +29,20 @@ namespace FormLocation
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnOpenMyKingdom = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // btnOpenMyKingdom
-            // 
-            this.btnOpenMyKingdom.Location = new System.Drawing.Point(174, 25);
-            this.btnOpenMyKingdom.Name = "btnOpenMyKingdom";
-            this.btnOpenMyKingdom.Size = new System.Drawing.Size(113, 23);
-            this.btnOpenMyKingdom.TabIndex = 0;
-            this.btnOpenMyKingdom.Text = "Open My Kingdom";
-            this.btnOpenMyKingdom.UseVisualStyleBackColor = true;
-            this.btnOpenMyKingdom.Click += new System.EventHandler(this.btnOpenMyKingdom_Click);
-            // 
-            // MainForm
+            // MyKingdom
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(299, 484);
-            this.Controls.Add(this.btnOpenMyKingdom);
-            this.Name = "MainForm";
+            this.ClientSize = new System.Drawing.Size(345, 450);
+            this.Name = "MyKingdom";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "MainForm";
+            this.Text = "My Kingdom";
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnOpenMyKingdom;
     }
 }
-

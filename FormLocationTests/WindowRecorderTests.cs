@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using FormLocation;
 using FormLocationLib;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace FormLocationTests
@@ -14,31 +19,26 @@ namespace FormLocationTests
         private WindowRecorder _recorder;
         private Point _formLocation;
         private MainForm _form;
+        private string _settingsFile;
 
         [SetUp]
         public void SetUp()
         {
-            _recorder = new WindowRecorder();
+            if ( File.Exists( _settingsFile ) ) File.Delete( _settingsFile );
+
             _formLocation = new Point( 130, 130 );
-            _recorder.Location = _formLocation;
+
             _form = new MainForm();
+            _form.StartPosition = FormStartPosition.Manual;
+            _form.Location = _formLocation;
+            
+
+            _recorder = new WindowRecorder();
+            _settingsFile = _recorder.InitializeWindowsSizer(_form);
+
+            _form.Show();
+
         }
-
-        private void FormOnFormClosing( object sender, FormClosingEventArgs e )
-        {
-            var form = sender as MainForm;
-            _recorder.Name = form.Name;
-            _recorder.Size = form.Size;
-            _recorder.Location = form.Location;
-        }
-
-        private void FormOnLoad( object sender, EventArgs e )
-        {
-            var form = sender as MainForm;
-            form.Location = _recorder.Location;
-        }
-
-
 
         [Test]
         public void WindowRecorderTest()
@@ -49,47 +49,44 @@ namespace FormLocationTests
         [Test]
         public void FormLoadRestoresLocationFromRecorder()
         {
-            _form.Load += FormOnLoad;
-            _form.Show();
-
             Assert.AreEqual( _form.Location, _recorder.Location );
         }
 
         [Test]
-        public void FormClosingSavesFormLocation()
+        public void FormClosingSavesFormLocationChange()
         {
-            _form.Load += FormOnLoad;
-            _form.FormClosing += FormOnFormClosing;
-            _form.Show();
             var newLocation = new Point( 200, 200 );
+            Assert.AreNotEqual( _form.Location, newLocation );
+
             _form.Location = newLocation;
             _form.Close();
-
-            Assert.AreEqual( newLocation, _recorder.Location );
+            var recorder = GetFormRecorder();
+            Assert.AreEqual( newLocation, recorder.Location);
         }
-
+        
         [Test]
         public void FormRecorderSavesFormName()
         {
-            _form.Load += FormOnLoad;
-            _form.FormClosing += FormOnFormClosing;
-            _form.Show();
             _form.Close();
-
-            Assert.AreEqual("MainForm", _recorder.Name );
+            var recorder = GetFormRecorder();
+            Assert.AreEqual("MainForm", recorder.Name );
         }
 
         [Test]
         public void FormRecorderSavesFormSize()
         {
-            _form.Load += FormOnLoad;
-            _form.FormClosing += FormOnFormClosing;
-            _form.Show();
             _form.Close();
-
-            Assert.AreEqual( _form.Size, _recorder.Size );
+            var recorder = GetFormRecorder();
+            Assert.AreEqual( _form.Size, recorder.Size );
         }
 
+        private WindowRecorder GetFormRecorder()
+        {
+            var jsonText = File.ReadAllText( _settingsFile );
+            var formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( jsonText );
+            var thisTestRecorder = formSettings.FirstOrDefault( f => f.Name == _form.Name );
+            return thisTestRecorder;
+        }
 
 
     }
