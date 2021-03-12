@@ -52,7 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormSettings.cs" />
     <Compile Include="RecorderSerializesFormElementsTests.cs" />
+    <Compile Include="WillNotRestoreSettingsOffScreenTests.cs" />
     <Compile Include="WindowRecorderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

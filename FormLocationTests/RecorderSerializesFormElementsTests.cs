@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using FormLocation;
-using FormLocationLib;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace FormLocationTests
 {
     [TestFixture]
-    public class RecorderSerializesFormElementsTests
+    public class RecorderSerializesFormElementsToFileTests
     {
-        private WindowRecorder _recorder;
         private MainForm _form;
         private MainForm _form2;
         private string _settingsPath;
@@ -51,7 +48,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChesterSizeTest()
         {
-            var settings = RestoreSettingsList();
+            var settings = FormSettings.RestoreSettingsList( _settingsPath );
             var chester = settings.FirstOrDefault( s => s.Name == "Chester" );
             Assert.AreEqual( chester.Size, new Size( 640, 480 ) );
         }
@@ -59,7 +56,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChesterLocationTest()
         {
-            var settings = RestoreSettingsList();
+            var settings = FormSettings.RestoreSettingsList( _settingsPath );
             var chester = settings.FirstOrDefault( s => s.Name == "Chester" );
             Assert.AreEqual( chester.Location, new Point( 200, 200 ) );
         }
@@ -68,7 +65,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChumleySizeTest()
         {
-            var settings = RestoreSettingsList();
+            var settings = FormSettings.RestoreSettingsList( _settingsPath );
             var chumley = settings.FirstOrDefault( s => s.Name == "Chumley" );
             Assert.AreEqual( chumley.Size, new Size( 800, 600 ) );
         }
@@ -76,22 +73,10 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChumleyLocationTest()
         {
-            var settings = RestoreSettingsList();
+            var settings = FormSettings.RestoreSettingsList( _settingsPath );
             var chumley = settings.FirstOrDefault( s => s.Name == "Chumley" );
             Assert.AreEqual( chumley.Location, new Point( 300, 400 ) );
         }
 
-        private List<WindowRecorder> RestoreSettingsList()
-        {
-            var formSettings = new List<WindowRecorder>();
-
-            if (File.Exists( _settingsPath ))
-            {
-                var fileText = File.ReadAllText( _settingsPath );
-                formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( fileText ).ToList();
-            }
-
-            return formSettings;
-        }
     }
 }

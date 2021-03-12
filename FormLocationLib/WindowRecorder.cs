@@ -71,7 +71,29 @@ namespace FormLocationLib
             // restore settings to objects
             this.Name = _form.Name = _settings.Name;
             this.Size = _form.Size = _settings.Size;
+            if (OffScreenLocation( _settings ))
+                _settings.Location = new Point( 200, 200 );
+
+
             this.Location = _form.Location = _settings.Location;
+        }
+
+        
+        private bool OffScreenLocation( WindowRecorder settings )
+        {
+            const int pixelBuffer = 20;
+            var screen = Screen.FromControl( _form ).Bounds;
+            var leftAllowablePixels = screen.Left - settings.Size.Width + pixelBuffer;
+            return 
+                
+                ( settings.Location.X < leftAllowablePixels
+                  // ||
+                  // settings.Location.X >= screen.Right - pixelBuffer 
+                  // ||
+                  // settings.Location.Y <= screen.Top - settings.Size.Height + pixelBuffer 
+                  // ||
+                  // settings.Location.Y >= screen.Bottom - pixelBuffer 
+                );
         }
 
 
