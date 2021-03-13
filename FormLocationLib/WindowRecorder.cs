@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 
 namespace FormLocationLib
 {
@@ -15,7 +15,7 @@ namespace FormLocationLib
         private WindowRecorder _settings;
 
 
-        public string InitializeWindowsSizer( Form form )
+        public string InitializeWindowsSizer(Form form)
         {
             SetSettingsPath();
             _form = form;
@@ -25,18 +25,18 @@ namespace FormLocationLib
             return _settingsFilePath;
         }
 
-        private void SaveOnDisposed( object sender, EventArgs e )
+        private void SaveOnDisposed(object sender, EventArgs e)
         {
             var formSettings = RestoreSettingsList();
 
             if (formSettings.Any())
             {
                 // get the object by this form's name
-                var settings = formSettings.FirstOrDefault( f => f.Name == _form.Name );
+                var settings = formSettings.FirstOrDefault(f => f.Name == _form.Name);
                 if (settings == null)
                 {
                     var list = formSettings.ToList();
-                    list.Add( this );
+                    list.Add(this);
                     formSettings = list;
                 }
                 else
@@ -44,21 +44,21 @@ namespace FormLocationLib
                     settings.Location = _form.Location;
                     settings.Size = _form.Size;
                 }
-                File.WriteAllText( _settingsFilePath, JsonConvert.SerializeObject( formSettings, Formatting.Indented ) );
+                File.WriteAllText(_settingsFilePath, JsonConvert.SerializeObject(formSettings, Formatting.Indented));
             }
             else
             {
                 var list = new List<WindowRecorder>() { this };
-                File.WriteAllText( _settingsFilePath, JsonConvert.SerializeObject( list, Formatting.Indented ) );
+                File.WriteAllText(_settingsFilePath, JsonConvert.SerializeObject(list, Formatting.Indented));
             }
         }
 
-        private void InitializeRecorder( object sender, EventArgs e )
+        private void InitializeRecorder(object sender, EventArgs e)
         {
             var settings = RestoreSettingsList();
-            
+
             // get the object by this form's name
-            _settings = settings.FirstOrDefault( f => f.Name == _form.Name );
+            _settings = settings.FirstOrDefault(f => f.Name == _form.Name);
             // if not found, set up the current form values to settings
             if (_settings == null)
             {
@@ -71,28 +71,30 @@ namespace FormLocationLib
             // restore settings to objects
             this.Name = _form.Name = _settings.Name;
             this.Size = _form.Size = _settings.Size;
-            if (OffScreenLocation( _settings ))
-                _settings.Location = new Point( 200, 200 );
+            if (OffScreenLocation(_settings))
+                _settings.Location = new Point(200, 200);
 
 
             this.Location = _form.Location = _settings.Location;
         }
 
-        
-        private bool OffScreenLocation( WindowRecorder settings )
+
+        private bool OffScreenLocation(WindowRecorder settings)
         {
             const int pixelBuffer = 20;
-            var screen = Screen.FromControl( _form ).Bounds;
+            var screen = Screen.FromControl(_form).Bounds;
             var leftAllowablePixels = screen.Left - settings.Size.Width + pixelBuffer;
-            return 
-                
-                ( settings.Location.X < leftAllowablePixels
-                  // ||
-                  // settings.Location.X >= screen.Right - pixelBuffer 
-                  // ||
-                  // settings.Location.Y <= screen.Top - settings.Size.Height + pixelBuffer 
-                  // ||
-                  // settings.Location.Y >= screen.Bottom - pixelBuffer 
+            var rightAllowablePixels = screen.Right - pixelBuffer;
+            var topAllowablePixels = screen.Top - (settings.Size.Height + pixelBuffer);
+            var bottomAllowablePixels = screen.Bottom - pixelBuffer;
+            return
+                (settings.Location.X < leftAllowablePixels
+                  ||
+                  settings.Location.X > rightAllowablePixels
+                  ||
+                  settings.Location.Y < topAllowablePixels
+                  ||
+                  settings.Location.Y > bottomAllowablePixels
                 );
         }
 
@@ -101,10 +103,10 @@ namespace FormLocationLib
         {
             var formSettings = new List<WindowRecorder>();
 
-            if (File.Exists( _settingsFilePath ))
+            if (File.Exists(_settingsFilePath))
             {
-                var fileText = File.ReadAllText( _settingsFilePath );
-                formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( fileText ).ToList();
+                var fileText = File.ReadAllText(_settingsFilePath);
+                formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>(fileText).ToList();
             }
 
             return formSettings;
@@ -114,12 +116,12 @@ namespace FormLocationLib
         {
             var settingsPath =
                  Path.Combine(
-                     Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ),
-                     AppDomain.CurrentDomain.FriendlyName.Substring( 0, AppDomain.CurrentDomain.FriendlyName.Length - 4 ) );
+                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                     AppDomain.CurrentDomain.FriendlyName.Substring(0, AppDomain.CurrentDomain.FriendlyName.Length - 4).Replace(":", "").Replace(" ", ""));
             // Insures that the directory exists, if this is new
-            Directory.CreateDirectory( settingsPath );
+            Directory.CreateDirectory(settingsPath);
 
-            _settingsFilePath = Path.Combine( settingsPath, "formSettings.json" );
+            _settingsFilePath = Path.Combine(settingsPath, "formSettings.json");
         }
 
 
