@@ -5,13 +5,12 @@ namespace FormLocation
 {
     public partial class MyKingdom : Form
     {
-        private WindowRecorder _recorder;
+        private FormLocator _locator;
 
         public MyKingdom()
         {
             InitializeComponent();
-            _recorder = new WindowRecorder();
-            _recorder.InitializeWindowsSizer( this );
+            _locator = new FormLocator(this);
         }
     }
 }

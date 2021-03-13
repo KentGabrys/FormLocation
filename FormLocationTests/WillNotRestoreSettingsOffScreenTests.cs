@@ -19,7 +19,7 @@ namespace FormLocationTests
         [SetUp]
         public void SetUp()
         {
-            using (var form = new MainForm()) { _settingsPath = form.RecorderSettings; }
+            using (var form = new MainForm()) { _settingsPath = form.LocatorSettings; }
             if (File.Exists(_settingsPath)) File.Delete(_settingsPath);
 
         }
@@ -36,7 +36,7 @@ namespace FormLocationTests
         public void FormWillNotAppearOffScreenTest(int X, int Y, string msg)
         {
             var form = new MainForm();
-            _settingsPath = form.RecorderSettings;
+            _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
             form.Show();
@@ -58,7 +58,7 @@ namespace FormLocationTests
 
             var X = 0 - formWidth + pixelsAllowed;
             var Y = 200;
-            _settingsPath = form.RecorderSettings;
+            _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
             form.Show();
@@ -81,7 +81,7 @@ namespace FormLocationTests
 
             var X = screen.Right - pixelsAllowed;
             var Y = 200;
-            _settingsPath = form.RecorderSettings;
+            _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
             form.Show();
@@ -104,7 +104,7 @@ namespace FormLocationTests
 
             var X = 200;
             var Y = screen.Top - formHeight - pixelsAllowed;
-            _settingsPath = form.RecorderSettings;
+            _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
             form.Show();
@@ -127,7 +127,7 @@ namespace FormLocationTests
 
             var X = 200;
             var Y = screen.Bottom - pixelsAllowed;
-            _settingsPath = form.RecorderSettings;
+            _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
             form.Show();
@@ -141,7 +141,7 @@ namespace FormLocationTests
             AssertLocationPosition(testPoint, offScreenTest, equal);
         }
 
-        private static void AssertLocationPosition(Point testPoint, WindowRecorder offScreenTest, bool equal)
+        private static void AssertLocationPosition(Point testPoint, FormLocator offScreenTest, bool equal)
         {
             if (equal)
                 Assert.AreEqual(testPoint, offScreenTest.Location);

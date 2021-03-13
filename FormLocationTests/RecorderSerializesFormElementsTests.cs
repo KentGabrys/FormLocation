@@ -1,14 +1,13 @@
 ﻿using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
 using FormLocation;
 using NUnit.Framework;
 
 namespace FormLocationTests
 {
     [TestFixture]
-    public class RecorderSerializesFormElementsToFileTests
+    public class LocatorSerializesFormElementsToFileTests
     {
         private MainForm _form;
         private MainForm _form2;
@@ -23,7 +22,7 @@ namespace FormLocationTests
             _form.Size = new Size( 640, 480 );
             _form.Location = new Point( 200, 200 );
             _form.Name = "Chester";
-            _settingsPath = _form.RecorderSettings;
+            _settingsPath = _form.LocatorSettings;
 
             _form.Show();
             _form.Close();
@@ -40,13 +39,13 @@ namespace FormLocationTests
 
 
         [Test]
-        public void RecorderSavesDataTest()
+        public void LocatorSavesDataTest()
         {
             Assert.IsTrue( File.Exists( _settingsPath ) );
         }
 
         [Test]
-        public void RecorderSavesChesterSizeTest()
+        public void LocatorSavesChesterSizeTest()
         {
             var settings = FormSettings.GetSettingsList( _settingsPath );
             var chester = settings.FirstOrDefault( s => s.Name == "Chester" );
@@ -54,7 +53,7 @@ namespace FormLocationTests
         }
 
         [Test]
-        public void RecorderSavesChesterLocationTest()
+        public void LocatorSavesChesterLocationTest()
         {
             var settings = FormSettings.GetSettingsList( _settingsPath );
             var chester = settings.FirstOrDefault( s => s.Name == "Chester" );
@@ -63,7 +62,7 @@ namespace FormLocationTests
 
 
         [Test]
-        public void RecorderSavesChumleySizeTest()
+        public void LocatorSavesChumleySizeTest()
         {
             var settings = FormSettings.GetSettingsList( _settingsPath );
             var chumley = settings.FirstOrDefault( s => s.Name == "Chumley" );
@@ -71,7 +70,7 @@ namespace FormLocationTests
         }
 
         [Test]
-        public void RecorderSavesChumleyLocationTest()
+        public void LocatorSavesChumleyLocationTest()
         {
             var settings = FormSettings.GetSettingsList( _settingsPath );
             var chumley = settings.FirstOrDefault( s => s.Name == "Chumley" );

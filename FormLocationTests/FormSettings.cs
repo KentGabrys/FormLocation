@@ -8,14 +8,14 @@ namespace FormLocationTests
 {
     public static class FormSettings
     {
-        public static List<WindowRecorder> GetSettingsList(string settingsPath)
+        public static List<FormLocator> GetSettingsList(string settingsPath)
         {
-            var formSettings = new List<WindowRecorder>();
+            var formSettings = new List<FormLocator>();
 
             if (File.Exists( settingsPath ))
             {
                 var fileText = File.ReadAllText( settingsPath );
-                formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( fileText ).ToList();
+                formSettings = JsonConvert.DeserializeObject<IEnumerable<FormLocator>>( fileText ).ToList();
             }
 
             return formSettings;

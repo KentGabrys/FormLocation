@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,41 +12,38 @@ namespace FormLocationTests
 {
 
     [TestFixture]
-    public class WindowRecorderTests
+    public class WindowLocatorTests
     {
-        private WindowRecorder _recorder;
+        private FormLocator _locator;
         private Point _formLocation;
         private MainForm _form;
-        private string _settingsFile;
+       // private string _settingsFile;
 
         [SetUp]
         public void SetUp()
         {
-            if ( File.Exists( _settingsFile ) ) File.Delete( _settingsFile );
-
             _formLocation = new Point( 300, 300 );
 
             _form = new MainForm();
             _form.StartPosition = FormStartPosition.Manual;
             _form.Location = _formLocation;
 
-            _recorder = new WindowRecorder();
-            _settingsFile = _recorder.InitializeWindowsSizer(_form);
+            _locator = new FormLocator(_form);
+            if ( File.Exists( _locator.SettingsPath ) ) File.Delete( _locator.SettingsPath );
 
             _form.Show();
-
         }
 
         [Test]
-        public void WindowRecorderTest()
+        public void WindowLocatorTest()
         {
-            Assert.AreEqual( _formLocation, _recorder.Location );
+            Assert.AreEqual( _formLocation, _locator.Location );
         }
 
         [Test]
-        public void FormLoadRestoresLocationFromRecorder()
+        public void FormLoadRestoresLocationFromLocator()
         {
-            Assert.AreEqual( _form.Location, _recorder.Location );
+            Assert.AreEqual( _form.Location, _locator.Location );
         }
 
         [Test]
@@ -59,32 +54,31 @@ namespace FormLocationTests
 
             _form.Location = newLocation;
             _form.Close();
-            var recorder = GetFormRecorder();
-            Assert.AreEqual( newLocation, recorder.Location);
+            var locator = GetFormLocator();
+            Assert.AreEqual( newLocation, locator.Location);
         }
         
         [Test]
-        public void FormRecorderSavesFormName()
+        public void FormLocatorSavesFormName()
         {
             _form.Close();
-            var recorder = GetFormRecorder();
-            Assert.AreEqual("MainForm", recorder.Name );
+            var locator = GetFormLocator();
+            Assert.AreEqual("MainForm", locator.Name );
         }
 
         [Test]
-        public void FormRecorderSavesFormSize()
+        public void FormLocatorSavesFormSize()
         {
             _form.Close();
-            var recorder = GetFormRecorder();
-            Assert.AreEqual( _form.Size, recorder.Size );
+            var locator = GetFormLocator();
+            Assert.AreEqual( _form.Size, locator.Size );
         }
 
-        private WindowRecorder GetFormRecorder()
+        private FormLocator GetFormLocator()
         {
-            var jsonText = File.ReadAllText( _settingsFile );
-            var formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>( jsonText );
-            var thisTestRecorder = formSettings.FirstOrDefault( f => f.Name == _form.Name );
-            return thisTestRecorder;
+            var jsonText = File.ReadAllText( _locator.SettingsPath );
+            var formSettings = JsonConvert.DeserializeObject<IEnumerable<FormLocator>>( jsonText );
+            return formSettings.FirstOrDefault( f => f.Name == _form.Name );
         }
 
 

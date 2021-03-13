@@ -8,19 +8,37 @@ using System.Windows.Forms;
 
 namespace FormLocationLib
 {
-    public class WindowRecorder
+    public class FormLocator
     {
         private Form _form;
         private string _settingsFilePath;
-        private WindowRecorder _settings;
+        private FormLocator _settings;
+
+        public Point Location { get; set; }
+        public string Name { get; set; }
+        public Size Size { get; set; }
 
 
-        public string InitializeWindowsSizer(Form form)
+        public FormLocator(Form form)
+        {
+            SetSettingsPath();
+            _form = form;
+            if (_form != null)
+            {
+                _form.Load += InitializeLocator;
+                _form.Disposed += SaveOnDisposed;
+            }
+        }
+
+        // Property used in testing
+        public string SettingsPath => _settingsFilePath;
+
+        public string InitializeFormLocator(Form form)
         {
             SetSettingsPath();
             _form = form;
 
-            _form.Load += InitializeRecorder;
+            _form.Load += InitializeLocator;
             _form.Disposed += SaveOnDisposed;
             return _settingsFilePath;
         }
@@ -50,12 +68,12 @@ namespace FormLocationLib
             {
                 Location = _form.Location;
                 Size = _form.Size;
-                var list = new List<WindowRecorder>() { this };
+                var list = new List<FormLocator>() { this };
                 File.WriteAllText(_settingsFilePath, JsonConvert.SerializeObject(list, Formatting.Indented));
             }
         }
 
-        private void InitializeRecorder(object sender, EventArgs e)
+        private void InitializeLocator(object sender, EventArgs e)
         {
             var settings = RestoreSettingsList();
 
@@ -76,12 +94,11 @@ namespace FormLocationLib
             if (OffScreenLocation(_settings))
                 _settings.Location = new Point(200, 200);
 
-
             this.Location = _form.Location = _settings.Location;
         }
 
 
-        private bool OffScreenLocation(WindowRecorder settings)
+        private bool OffScreenLocation(FormLocator settings)
         {
             const int pixelBuffer = 50;
             var screen = Screen.FromControl(_form).Bounds;
@@ -100,15 +117,14 @@ namespace FormLocationLib
                 );
         }
 
-
-        private List<WindowRecorder> RestoreSettingsList()
+        private List<FormLocator> RestoreSettingsList()
         {
-            var formSettings = new List<WindowRecorder>();
+            var formSettings = new List<FormLocator>();
 
             if (File.Exists(_settingsFilePath))
             {
                 var fileText = File.ReadAllText(_settingsFilePath);
-                formSettings = JsonConvert.DeserializeObject<IEnumerable<WindowRecorder>>(fileText).ToList();
+                formSettings = JsonConvert.DeserializeObject<IEnumerable<FormLocator>>(fileText).ToList();
             }
 
             return formSettings;
@@ -125,13 +141,5 @@ namespace FormLocationLib
 
             _settingsFilePath = Path.Combine(settingsPath, "formSettings.json");
         }
-
-
-        public Point Location { get; set; }
-        public string Name { get; set; }
-        public Size Size { get; set; }
-
-
     }
-
 }
