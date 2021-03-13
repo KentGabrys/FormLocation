@@ -48,6 +48,8 @@ namespace FormLocationLib
             }
             else
             {
+                Location = _form.Location;
+                Size = _form.Size;
                 var list = new List<WindowRecorder>() { this };
                 File.WriteAllText(_settingsFilePath, JsonConvert.SerializeObject(list, Formatting.Indented));
             }
@@ -81,7 +83,7 @@ namespace FormLocationLib
 
         private bool OffScreenLocation(WindowRecorder settings)
         {
-            const int pixelBuffer = 20;
+            const int pixelBuffer = 50;
             var screen = Screen.FromControl(_form).Bounds;
             var leftAllowablePixels = screen.Left - settings.Size.Width + pixelBuffer;
             var rightAllowablePixels = screen.Right - pixelBuffer;

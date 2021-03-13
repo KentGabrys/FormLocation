@@ -43,8 +43,8 @@ namespace FormLocationTests
             Console.WriteLine($"Message: {msg} ---- Before: {testPoint} - After: {offScreenTest.Location}");
         }
 
-        [TestCase(20, true)]
-        [TestCase(19, false)]
+        [TestCase(50, true)]
+        [TestCase(49, false)]
         public void FormAllowedLeftOffScreenToPixelBuffer(int pixelsAllowed, bool equal)
         {
             var form = new MainForm();
@@ -67,8 +67,8 @@ namespace FormLocationTests
             AssertLocationPosition(testPoint, offScreenTest, equal);
         }
 
-        [TestCase(20, true)]
-        [TestCase(19, false)]
+        [TestCase(50, true)]
+        [TestCase(49, false)]
         public void FormAllowedRightOffScreenToPixelBuffer(int pixelsAllowed, bool equal)
         {
             var form = new MainForm();
@@ -89,8 +89,8 @@ namespace FormLocationTests
             AssertLocationPosition(testPoint, offScreenTest, equal);
         }
 
-        [TestCase(20, true)]
-        [TestCase(21, false)]
+        [TestCase(50, true)]
+        [TestCase(51, false)]
         public void FormAllowedTopOffScreenToPixelBuffer(int pixelsAllowed, bool equal)
         {
             var form = new MainForm();
@@ -113,8 +113,8 @@ namespace FormLocationTests
             AssertLocationPosition(testPoint, offScreenTest, equal);
         }
 
-        [TestCase(20, true)]
-        [TestCase(19, false)]
+        [TestCase(50, true)]
+        [TestCase(49, false)]
         public void FormAllowedBottomOffScreenToPixelBuffer(int pixelsAllowed, bool equal)
         {
             var form = new MainForm();
