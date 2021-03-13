@@ -26,7 +26,7 @@ namespace FormLocationTests
         {
             if ( File.Exists( _settingsFile ) ) File.Delete( _settingsFile );
 
-            _formLocation = new Point( 130, 130 );
+            _formLocation = new Point( 300, 300 );
 
             _form = new MainForm();
             _form.StartPosition = FormStartPosition.Manual;

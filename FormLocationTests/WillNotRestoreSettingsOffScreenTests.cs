@@ -23,6 +23,11 @@ namespace FormLocationTests
             if (File.Exists(_settingsPath)) File.Delete(_settingsPath);
 
         }
+        [TearDown]
+        public void TearDown()
+        {
+            if (File.Exists(_settingsPath)) File.Delete(_settingsPath);
+        }
 
         [TestCase(-20000, 200, "Past Left Edge of Window")]
         [TestCase(20000, 200, "Past Right Edge of Window")]
