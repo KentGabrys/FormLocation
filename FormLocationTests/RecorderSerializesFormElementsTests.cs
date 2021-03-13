@@ -48,7 +48,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChesterSizeTest()
         {
-            var settings = FormSettings.RestoreSettingsList( _settingsPath );
+            var settings = FormSettings.GetSettingsList( _settingsPath );
             var chester = settings.FirstOrDefault( s => s.Name == "Chester" );
             Assert.AreEqual( chester.Size, new Size( 640, 480 ) );
         }
@@ -56,7 +56,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChesterLocationTest()
         {
-            var settings = FormSettings.RestoreSettingsList( _settingsPath );
+            var settings = FormSettings.GetSettingsList( _settingsPath );
             var chester = settings.FirstOrDefault( s => s.Name == "Chester" );
             Assert.AreEqual( chester.Location, new Point( 200, 200 ) );
         }
@@ -65,7 +65,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChumleySizeTest()
         {
-            var settings = FormSettings.RestoreSettingsList( _settingsPath );
+            var settings = FormSettings.GetSettingsList( _settingsPath );
             var chumley = settings.FirstOrDefault( s => s.Name == "Chumley" );
             Assert.AreEqual( chumley.Size, new Size( 800, 600 ) );
         }
@@ -73,7 +73,7 @@ namespace FormLocationTests
         [Test]
         public void RecorderSavesChumleyLocationTest()
         {
-            var settings = FormSettings.RestoreSettingsList( _settingsPath );
+            var settings = FormSettings.GetSettingsList( _settingsPath );
             var chumley = settings.FirstOrDefault( s => s.Name == "Chumley" );
             Assert.AreEqual( chumley.Location, new Point( 300, 400 ) );
         }

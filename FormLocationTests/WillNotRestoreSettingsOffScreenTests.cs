@@ -42,7 +42,7 @@ namespace FormLocationTests
             form.Show();
             form.Close();
 
-            var settings = FormSettings.RestoreSettingsList(_settingsPath);
+            var settings = FormSettings.GetSettingsList(_settingsPath);
             var offScreenTest = settings.FirstOrDefault(s => s.Name == "MainForm");
             Assert.AreNotEqual(testPoint, offScreenTest.Location);
             Console.WriteLine($"Message: {msg} ---- Before: {testPoint} - After: {offScreenTest.Location}");
@@ -64,7 +64,7 @@ namespace FormLocationTests
             form.Show();
             form.Close();
 
-            var settings = FormSettings.RestoreSettingsList(_settingsPath);
+            var settings = FormSettings.GetSettingsList(_settingsPath);
             var offScreenTest = settings.FirstOrDefault(s => s.Name == "MainForm");
             Console.WriteLine($"Form.Width: {formWidth}");
             Console.WriteLine($"Before: {testPoint} - After: {offScreenTest.Location}");
@@ -87,7 +87,7 @@ namespace FormLocationTests
             form.Show();
             form.Close();
 
-            var settings = FormSettings.RestoreSettingsList(_settingsPath);
+            var settings = FormSettings.GetSettingsList(_settingsPath);
             var offScreenTest = settings.FirstOrDefault(s => s.Name == "MainForm");
             Console.WriteLine($"Before: {testPoint} - After: {offScreenTest.Location}");
 
@@ -110,7 +110,7 @@ namespace FormLocationTests
             form.Show();
             form.Close();
 
-            var settings = FormSettings.RestoreSettingsList(_settingsPath);
+            var settings = FormSettings.GetSettingsList(_settingsPath);
             var offScreenTest = settings.FirstOrDefault(s => s.Name == "MainForm");
             Console.WriteLine($"Form.Height: {formHeight}");
             Console.WriteLine($"Before: {testPoint} - After: {offScreenTest.Location}");
@@ -133,7 +133,7 @@ namespace FormLocationTests
             form.Show();
             form.Close();
 
-            var settings = FormSettings.RestoreSettingsList(_settingsPath);
+            var settings = FormSettings.GetSettingsList(_settingsPath);
             var offScreenTest = settings.FirstOrDefault(s => s.Name == "MainForm");
 
             Console.WriteLine($"Before: {testPoint} - After: {offScreenTest.Location}");

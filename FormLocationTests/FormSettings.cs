@@ -8,7 +8,7 @@ namespace FormLocationTests
 {
     public static class FormSettings
     {
-        public static List<WindowRecorder> RestoreSettingsList(string settingsPath)
+        public static List<WindowRecorder> GetSettingsList(string settingsPath)
         {
             var formSettings = new List<WindowRecorder>();
 
