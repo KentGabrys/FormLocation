@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace FormLocationLib
         public Point Location { get; set; }
         public string Name { get; set; }
         public Size Size { get; set; }
+        //public string Display { get; set; }
 
 
         public FormLocator(Form form)
@@ -91,29 +93,41 @@ namespace FormLocationLib
             // restore settings to objects
             this.Name = _form.Name = _settings.Name;
             this.Size = _form.Size = _settings.Size;
-            if (OffScreenLocation(_settings))
+            //this.Display = Screen.FromControl( _form ).DeviceName;
+            
+            if (SettingsAreNotOnScreen(_settings))
                 _settings.Location = new Point(200, 200);
-
             this.Location = _form.Location = _settings.Location;
         }
 
 
-        private bool OffScreenLocation(FormLocator settings)
+        private bool SettingsAreNotOnScreen(FormLocator settings)
+        {
+            Screen screen = null;
+            foreach ( var s in Screen.AllScreens )
+                if ( !FormIsOffScreen( s.WorkingArea, settings ) )
+                    screen = s;
+
+            return screen == null;
+
+        }
+
+        private bool FormIsOffScreen( Rectangle screenWorkingArea, FormLocator settings )
         {
             const int pixelBuffer = 50;
-            var screen = Screen.FromControl(_form).Bounds;
-            var leftAllowablePixels = screen.Left - settings.Size.Width + pixelBuffer;
-            var rightAllowablePixels = screen.Right - pixelBuffer;
-            var topAllowablePixels = screen.Top - (settings.Size.Height + pixelBuffer);
-            var bottomAllowablePixels = screen.Bottom - pixelBuffer;
+            var leftAllowablePixels = screenWorkingArea.Left - settings.Size.Width + pixelBuffer;
+            var rightAllowablePixels = screenWorkingArea.Right - pixelBuffer;
+            var topAllowablePixels = screenWorkingArea.Top - (settings.Size.Height - pixelBuffer);
+            var bottomAllowablePixels = screenWorkingArea.Bottom - pixelBuffer;
+
             return
                 (settings.Location.X < leftAllowablePixels
-                  ||
-                  settings.Location.X > rightAllowablePixels
-                  ||
-                  settings.Location.Y < topAllowablePixels
-                  ||
-                  settings.Location.Y > bottomAllowablePixels
+                 ||
+                 settings.Location.X > rightAllowablePixels
+                 ||
+                 settings.Location.Y < topAllowablePixels
+                 ||
+                 settings.Location.Y > bottomAllowablePixels
                 );
         }
 

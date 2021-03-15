@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FormSettings.cs" />
+    <Compile Include="FormTracksMultiScreenTests.cs" />
     <Compile Include="RecorderSerializesFormElementsTests.cs" />
     <Compile Include="WillNotRestoreSettingsOffScreenTests.cs" />
     <Compile Include="WindowRecorderTests.cs" />

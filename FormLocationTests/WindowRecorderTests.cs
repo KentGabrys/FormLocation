@@ -75,9 +75,8 @@ namespace FormLocationTests
         }
 
         private FormLocator GetFormLocator()
-        {
-            var jsonText = File.ReadAllText( _locator.SettingsPath );
-            var formSettings = JsonConvert.DeserializeObject<IEnumerable<FormLocator>>( jsonText );
+        {   
+            var formSettings = FormSettings.GetSettingsList( _locator.SettingsPath );
             return formSettings.FirstOrDefault( f => f.Name == _form.Name );
         }
 

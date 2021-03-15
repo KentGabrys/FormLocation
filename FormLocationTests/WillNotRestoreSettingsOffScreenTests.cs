@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using FormLocationLib;
 
@@ -77,13 +78,14 @@ namespace FormLocationTests
         public void FormAllowedRightOffScreenToPixelBuffer(int pixelsAllowed, bool equal)
         {
             var form = new MainForm();
-            var screen = Screen.FromControl(form).Bounds;
-
-            var X = screen.Right - pixelsAllowed;
-            var Y = 200;
             _settingsPath = form.LocatorSettings;
-            var testPoint = new Point(X, Y);
-            form.Location = testPoint;
+            
+            // for multiple screens, be sure our test case uses the max right value.
+            for ( int i = 0; i < Screen.AllScreens.Length; i++ )
+                SetFormLocation( pixelsAllowed, form );
+            
+            // save the initialized setting.
+            var testPoint = form.Location;
             form.Show();
             form.Close();
 
@@ -94,8 +96,17 @@ namespace FormLocationTests
             AssertLocationPosition(testPoint, offScreenTest, equal);
         }
 
+        private static void SetFormLocation( int pixelsAllowed, MainForm form )
+        {
+            var screen = Screen.FromControl( form ).Bounds;
+            var X = screen.Right - pixelsAllowed;
+            var Y = 200;
+            var testPoint = new Point( X, Y );
+            form.Location = testPoint;
+        }
+
         [TestCase(50, true)]
-        [TestCase(51, false)]
+        [TestCase(49, false)]
         public void FormAllowedTopOffScreenToPixelBuffer(int pixelsAllowed, bool equal)
         {
             var form = new MainForm();
@@ -103,7 +114,7 @@ namespace FormLocationTests
             var screen = Screen.FromControl(form).Bounds;
 
             var X = 200;
-            var Y = screen.Top - formHeight - pixelsAllowed;
+            var Y = screen.Top - formHeight + pixelsAllowed;
             _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
@@ -125,8 +136,9 @@ namespace FormLocationTests
             var form = new MainForm();
             var screen = Screen.FromControl(form).Bounds;
 
+            var taskBarHeight = 40;
             var X = 200;
-            var Y = screen.Bottom - pixelsAllowed;
+            var Y = screen.Bottom - taskBarHeight - pixelsAllowed;
             _settingsPath = form.LocatorSettings;
             var testPoint = new Point(X, Y);
             form.Location = testPoint;
